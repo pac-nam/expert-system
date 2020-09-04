@@ -58,7 +58,7 @@ func parseFile(ctx *s.Context, filename string) string {
 	return ""
 }
 
-func Parse() string {
+func Parse() (*s.Context, string) {
 	ctx := s.Context{Initial: []byte("="), Query: []byte("?")}
 	if len(os.Args) != 2 || os.Args[1] == "-h" {
 		fmt.Println(m.Help)
@@ -66,8 +66,8 @@ func Parse() string {
 	}
 	err := parseFile(&ctx, os.Args[1])
 	if err != "" {
-		return err
+		return &ctx, err
 	}
-	fmt.Print(ctx)
-	return ""
+	// fmt.Print(ctx)
+	return &ctx, ""
 }
