@@ -28,12 +28,19 @@ func parseLine(ctx *s.Context, line string) string {
 			return m.MultipleInitialStates
 		}
 		ctx.Initial = []byte(line[1:])
+		ctx.Variables = make(map[byte]bool)
+		for _, char := range ctx.Initial {
+			ctx.Variables[char] = true
+		}
 	} else if line[0] == '?' {
 		if ctx.Query[0] != '?' {
 			return m.MultipleQuery
 		}
 		ctx.Query = []byte(line[1:])
 	} else {
+		if err := checkLine(line); err != "" {
+			return err
+		}
 		ctx.Rules = append(ctx.Rules, []byte(line))
 	}
 	return ""
@@ -58,8 +65,19 @@ func parseFile(ctx *s.Context, filename string) string {
 	return ""
 }
 
+func InitVariables(ctx *s.Context) string {
+	for _, char := range ctx.Initial {
+		_, exist := ctx.Variables[char]
+		if exist {
+			return "double variable: '" + string(char) + "' in initial state"
+		}
+		ctx.Variables[char] = true
+	}
+	return ""
+}
+
 func Parse() (*s.Context, string) {
-	ctx := s.Context{Initial: []byte("="), Query: []byte("?")}
+	ctx := s.Context{Initial: []byte("="), Query: []byte("?"), Variables: make(map[byte]bool)}
 	if len(os.Args) != 2 || os.Args[1] == "-h" {
 		fmt.Println(m.Help)
 		os.Exit(0)
@@ -68,6 +86,7 @@ func Parse() (*s.Context, string) {
 	if err != "" {
 		return &ctx, err
 	}
+	err = InitVariables(&ctx)
 	// fmt.Print(ctx)
-	return &ctx, ""
+	return &ctx, err
 }
