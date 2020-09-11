@@ -1,0 +1,10 @@
+A => B
+B => D+  G
+D => E
+E => C
+
+=B
+
+?ABCDEFG
+
+#!A B C D E !F G

@@ -1,0 +1,9 @@
+A => B
+B => C
+C => D
+D => !B
+
+=A
+
+?A
+# error: B => !B

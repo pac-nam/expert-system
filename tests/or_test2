@@ -1,0 +1,7 @@
+A | B => C
+G => D
+
+=G
+
+?A B C D G
+#!A !B !C !D G

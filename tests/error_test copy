@@ -1,0 +1,11 @@
+A => B
+B => C
+C => D
+C => E
+D => G
+D => !G
+
+=A
+
+?A
+# error: D => G + !G
