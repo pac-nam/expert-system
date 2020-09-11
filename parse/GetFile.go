@@ -29,9 +29,6 @@ func parseLine(ctx *s.Context, line string) string {
 		}
 		ctx.Initial = []byte(line[1:])
 		ctx.Variables = make(map[byte]bool)
-		for _, char := range ctx.Initial {
-			ctx.Variables[char] = true
-		}
 	} else if line[0] == '?' {
 		if ctx.Query[0] != '?' {
 			return m.MultipleQuery
@@ -66,6 +63,7 @@ func parseFile(ctx *s.Context, filename string) string {
 }
 
 func InitVariables(ctx *s.Context) string {
+	fmt.Println()
 	for _, char := range ctx.Initial {
 		_, exist := ctx.Variables[char]
 		if exist {
