@@ -38,13 +38,14 @@ func parseLine(ctx *s.Context, line string) string {
 		if err := checkLine(line); err != "" {
 			return err
 		}
-		ctx.Rules = append(ctx.Rules, []byte(line))
+		tmp := strings.Split(line, "=>")
+		ctx.Rules = append(ctx.Rules, s.Rule{Premice: []byte(tmp[0]), Conclusion: []byte(tmp[1]), Used: false})
 	}
 	return ""
 }
 
 func parseFile(ctx *s.Context, filename string) string {
-	ctx.Rules = make([][]byte, 0)
+	ctx.Rules = make([]s.Rule, 0)
 	file, err := os.Open(filename)
 	if err != nil {
 			return m.OpenError

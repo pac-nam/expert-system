@@ -5,7 +5,7 @@ import (
 )
 
 type Context struct {
-	Rules		[][]byte
+	Rules		[]Rule
 	Initial		[]byte
 	Query		[]byte
 	Variables	map[byte]bool
@@ -18,8 +18,8 @@ func (ctx Context)String() string {
 	res += "\nQuery:\n"
 	res += fmt.Sprintln(string(ctx.Query))
 	res += "\nRules:\n"
-	for _, line := range ctx.Rules {
-		res += fmt.Sprintln(string(line))
+	for _, rule := range ctx.Rules {
+		res += fmt.Sprintln(rule)
 	}
 	res += "Variables:\n"
 	for key, Value := range ctx.Variables {
