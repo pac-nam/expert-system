@@ -19,7 +19,6 @@ func epur(line string) string {
 }
 
 func parseLine(ctx *s.Context, line string) string {
-	// fmt.Println(line)
 	if len(line) == 0 {
 		return ""
 	}
@@ -73,7 +72,6 @@ func parseFile(ctx *s.Context, filename string) string {
 }
 
 func initVariables(ctx *s.Context) string {
-	fmt.Println()
 	for _, char := range ctx.Initial {
 		_, exist := ctx.Variables[char]
 		if exist {
@@ -96,6 +94,5 @@ func Parse() (*s.Context, string) {
 		return &ctx, err
 	}
 	err = initVariables(&ctx)
-	// fmt.Print(ctx)
 	return &ctx, err
 }
