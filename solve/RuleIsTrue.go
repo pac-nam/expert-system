@@ -2,7 +2,7 @@ package solve
 
 import (
 	"strings"
-	// "fmt"
+	"fmt"
 	// "os"
 	s "expert-system/structures"
 )
@@ -54,10 +54,11 @@ func noOr(Conditions string, Variables map[byte]bool) int {
 	res := s.TRUE
 	for _, part := range tab {
 		tmp := noAnd(part, Variables)
-		if tmp == s.UNKNOW {
-			return s.UNKNOW
-		} else if tmp == s.FALSE {
-			res = s.FALSE
+		fmt.Println(tmp)
+		if tmp == s.FALSE {
+			return s.FALSE
+		} else if tmp == s.UNKNOW {
+			res = s.UNKNOW
 		}
 	}
 	return res
