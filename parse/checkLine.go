@@ -34,7 +34,7 @@ func checkLine(line string) string {
 	}
 	for index, char := range line[:lastVerif] {
 		if strings.ContainsRune(ALPHABET, char) {
-			if !strings.ContainsRune("<+=^|", rune(line[index+1])) {
+			if !strings.ContainsRune("<+=^|)", rune(line[index+1])) {
 				return "wrong character after '" + string(char) + "' in rule: " + line
 			}
 		} else if char == '=' {
