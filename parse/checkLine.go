@@ -49,7 +49,7 @@ func	checkLine(line string) string {
 				return "wrong character after '" + string(char) + "' in rule: " + line
 			}
 		} else if char == '>' {
-			if !strings.ContainsRune(ALPHABET, rune(line[index + 1])) {
+			if !strings.ContainsRune(ALPHABETP, rune(line[index + 1])) {
 				return "wrong character after '" + string(char) + "' in rule: " + line
 			}
 		} else if char == '!' {
