@@ -54,7 +54,7 @@ func noOr(Conditions string, Variables map[byte]bool) int {
 	res := s.TRUE
 	for _, part := range tab {
 		tmp := noAnd(part, Variables)
-		fmt.Println(tmp)
+		// fmt.Println(tmp)
 		if tmp == s.FALSE {
 			return s.FALSE
 		} else if tmp == s.UNKNOW {
