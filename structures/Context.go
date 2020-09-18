@@ -28,7 +28,7 @@ func (ctx Context) String() string {
 	return res
 }
 
-func (ctx Context) Copy() *Context {
+func (ctx *Context) Copy() *Context {
 	newCtx := Context{}
 	newCtx.Rules = make([]Rule, len(ctx.Rules))
 	copy(newCtx.Rules, ctx.Rules)
