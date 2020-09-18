@@ -27,3 +27,14 @@ func (ctx Context) String() string {
 	}
 	return res
 }
+
+func (ctx Context) Copy() *Context {
+	newCtx := Context{}
+	newCtx.Rules = make([]Rule, len(ctx.Rules))
+	copy(newCtx.Rules, ctx.Rules)
+	newCtx.Variables = make(map[byte]bool)
+	for key, value := range ctx.Variables {
+		newCtx.Variables[key] = value
+	}
+	return &newCtx
+}
