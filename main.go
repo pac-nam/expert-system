@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	p "expert-system/parse"
 	s "expert-system/solve"
+	"fmt"
 )
 
 func main() {

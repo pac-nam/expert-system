@@ -9,6 +9,18 @@ import (
 	"strings"
 )
 
+func getUsedVar(line string) []byte {
+	res := ""
+	for _, char := range line {
+		if strings.ContainsRune(ALPHABET, char) {
+			if !strings.ContainsRune(res, char) {
+				res += string(char)
+			}
+		}
+	}
+	return []byte(res)
+}
+
 func epur(line string) string {
 	line = strings.Split(line, "#")[0]
 	toChange := []string{"\r", "\v", "\t", "\f", "\n", " "}
@@ -42,12 +54,12 @@ func parseLine(ctx *s.Context, line string) string {
 			if err := checkLine(tmp[1] + "=>" + tmp[0]); err != "" {
 				return err
 			}
-			ctx.Rules = append(ctx.Rules, s.Rule{Premice: []byte(tmp[1]), Conclusion: []byte(tmp[0]), Used: false})
-			ctx.Rules = append(ctx.Rules, s.Rule{Premice: []byte(tmp[0]), Conclusion: []byte(tmp[1]), Used: false})
+			ctx.Rules = append(ctx.Rules, s.Rule{Premice: []byte(tmp[1]), Conclusion: []byte(tmp[0]), UsedVar: getUsedVar(tmp[1]), Used: false})
+			ctx.Rules = append(ctx.Rules, s.Rule{Premice: []byte(tmp[0]), Conclusion: []byte(tmp[1]), UsedVar: getUsedVar(tmp[0]), Used: false})
 			return ""
 		}
 		tmp = strings.Split(line, "=>")
-		ctx.Rules = append(ctx.Rules, s.Rule{Premice: []byte(tmp[0]), Conclusion: []byte(tmp[1]), Used: false})
+		ctx.Rules = append(ctx.Rules, s.Rule{Premice: []byte(tmp[0]), Conclusion: []byte(tmp[1]), UsedVar: getUsedVar(tmp[0]), Used: false})
 	}
 	return ""
 }

@@ -11,7 +11,7 @@ type Context struct {
 	Variables	map[byte]bool
 }
 
-func (ctx Context)String() string {
+func (ctx Context) String() string {
 	res := "------------------------------------Context------------------------------------\n"
 	res += "Initial state:\n"
 	res += fmt.Sprintln(string(ctx.Initial))
@@ -23,7 +23,7 @@ func (ctx Context)String() string {
 	}
 	res += "Variables:\n"
 	for key, Value := range ctx.Variables {
-		res += fmt.Sprintln(string(key) + ":", Value)
+		res += fmt.Sprintln(string(key)+":", Value)
 	}
 	return res
 }
