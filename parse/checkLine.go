@@ -58,9 +58,15 @@ func checkLine(line string) string {
 			if !strings.ContainsRune(ALPHABET+"(", rune(line[index+1])) {
 				return "wrong character after '" + string(char) + "' in rule: " + line
 			}
-		} else if strings.ContainsRune("+|^", char) {
+		} else if char == '+' {
 			if !strings.ContainsRune(ALPHABET+"(!", rune(line[index+1])) {
 				return "wrong character after '" + string(char) + "' in rule: " + line
+			}
+		} else if strings.ContainsRune("|^", char) {
+			if !strings.ContainsRune(ALPHABET+"(!", rune(line[index+1])) {
+				return "wrong character after '" + string(char) + "' in rule: " + line
+			} else if equal {
+				return "invalid sign '" + string(char) + "' in conclusion in rule: " + line
 			}
 		} else if char == '(' {
 			if !strings.ContainsRune(ALPHABET+"!", rune(line[index+1])) {
