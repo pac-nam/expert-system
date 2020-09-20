@@ -10,15 +10,14 @@ import (
 func VerifConclusion(ctx *s.Context, Conclusion string, CanChange []rune) bool {
 	if len(CanChange) == 0 {
 		// fmt.Println("Conclusion:", Conclusion)
-		if RuleIsTrue(Conclusion, ctx.Variables) != s.TRUE {
-			return false
-		}
-		newctx := ctx.Copy()
-		finalmap, end := ComplexeCase(newctx)
-		if end {
-			ctx.Rules = newctx.Rules
-			ctx.Variables = finalmap
-			return true
+		if RuleIsTrue(Conclusion, ctx.Variables) == s.TRUE {
+			newctx := ctx.Copy()
+			finalmap, end := ComplexeCase(newctx)
+			if end {
+				ctx.Rules = newctx.Rules
+				ctx.Variables = finalmap
+				return true
+			}
 		}
 	} else if _, exist := ctx.Variables[CanChange[0]]; !exist {
 		ctx.Variables[CanChange[0]] = true
