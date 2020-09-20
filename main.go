@@ -7,6 +7,10 @@ import (
 )
 
 func main() {
+	// tmp := make(map[byte]bool)
+	// tmp['A'] = true
+	// fmt.Println(s.RuleIsTrue("A", tmp))
+	// return
 	ctx, err := p.Parse()
 	if err != "" {
 		fmt.Println("Error:", err)
@@ -15,7 +19,10 @@ func main() {
 		if err != "" {
 			fmt.Println(err)
 		} else {
-			fmt.Println(ctx)
+			for _, char := range ctx.Query {
+				fmt.Println(string(char) + ":", ctx.Variables[char])
+			}
+			// fmt.Println(ctx)
 		}
 	}
 }

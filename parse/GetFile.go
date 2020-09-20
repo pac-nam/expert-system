@@ -9,18 +9,6 @@ import (
 	"strings"
 )
 
-func getUsedVar(line string) []byte {
-	res := ""
-	for _, char := range line {
-		if strings.ContainsRune(ALPHABET, char) {
-			if !strings.ContainsRune(res, char) {
-				res += string(char)
-			}
-		}
-	}
-	return []byte(res)
-}
-
 func epur(line string) string {
 	line = strings.Split(line, "#")[0]
 	toChange := []string{"\r", "\v", "\t", "\f", "\n", " "}
@@ -38,13 +26,13 @@ func parseLine(ctx *s.Context, line string) string {
 		if ctx.Initial[0] != '=' {
 			return m.MultipleInitialStates
 		}
-		ctx.Initial = []byte(line[1:])
-		ctx.Variables = make(map[byte]bool)
+		ctx.Initial = line[1:]
+		ctx.Variables = make(map[rune]bool)
 	} else if line[0] == '?' {
 		if ctx.Query[0] != '?' {
 			return m.MultipleQuery
 		}
-		ctx.Query = []byte(line[1:])
+		ctx.Query = line[1:]
 	} else {
 		if err := checkLine(line); err != "" {
 			return err
@@ -54,12 +42,12 @@ func parseLine(ctx *s.Context, line string) string {
 			if err := checkLine(tmp[1] + "=>" + tmp[0]); err != "" {
 				return err
 			}
-			ctx.Rules = append(ctx.Rules, s.Rule{Premice: []byte(tmp[1]), Conclusion: []byte(tmp[0]), UsedVar: getUsedVar(tmp[1]), Used: false})
-			ctx.Rules = append(ctx.Rules, s.Rule{Premice: []byte(tmp[0]), Conclusion: []byte(tmp[1]), UsedVar: getUsedVar(tmp[0]), Used: false})
+			ctx.Rules = append(ctx.Rules, s.Rule{Premice: tmp[1], Conclusion: tmp[0]})
+			ctx.Rules = append(ctx.Rules, s.Rule{Premice: tmp[0], Conclusion: tmp[1]})
 			return ""
 		}
 		tmp = strings.Split(line, "=>")
-		ctx.Rules = append(ctx.Rules, s.Rule{Premice: []byte(tmp[0]), Conclusion: []byte(tmp[1]), UsedVar: getUsedVar(tmp[0]), Used: false})
+		ctx.Rules = append(ctx.Rules, s.Rule{Premice: tmp[0], Conclusion: tmp[1]})
 	}
 	return ""
 }
@@ -84,19 +72,32 @@ func parseFile(ctx *s.Context, filename string) string {
 }
 
 func initVariables(ctx *s.Context) string {
+	negative := false
 	for _, char := range ctx.Initial {
+		if char == '!' {
+			if negative {
+				return m.DoubleExclamation
+			}
+			negative = true
+			continue
+		}
 		_, exist := ctx.Variables[char]
 		if exist {
-			return "double variable: '" + string(char) + "' in initial state"
+			return "Double variable: '" + string(char) + "' in initial state"
 		}
-		ctx.Variables[char] = true
+		if negative {
+			ctx.Variables[char] = false
+			negative = false
+		} else {
+			ctx.Variables[char] = true
+		}
 	}
 	return ""
 }
 
 // Parse will parse the file given as first argument and fullfil the context
 func Parse() (*s.Context, string) {
-	ctx := s.Context{Initial: []byte("="), Query: []byte("?"), Variables: make(map[byte]bool)}
+	ctx := s.Context{Initial: "=", Query: "?"}
 	if len(os.Args) != 2 || os.Args[1] == "-h" {
 		fmt.Println(m.Help)
 		os.Exit(0)

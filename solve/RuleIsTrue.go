@@ -2,7 +2,7 @@ package solve
 
 import (
 	"strings"
-	"fmt"
+	// "fmt"
 	// "os"
 	s "expert-system/structures"
 )
@@ -20,41 +20,42 @@ func retBoolSprecial(variable bool, exist bool) int {
 	return s.FALSE
 }
 
-func noAnd(Conditions string, Variables map[byte]bool) int {
+func simpleVar(Conditions string, Variables map[rune]bool) int {
 	length := len(Conditions)
 
-	if length == 2 && Conditions[0] == '!' {
-		if strings.ContainsRune(ALPHABET, rune(Conditions[1])) {
-			variable, exist := Variables[byte(Conditions[1])]
-			return retBoolSprecial(!variable, exist)
-		} else if Conditions[1] == 't' {
+	if length == 2 {
+		switch Conditions[1] {
+		case 't':
 			return s.FALSE
-		} else if Conditions[1] == 'f' {
+		case 'f':
 			return s.TRUE
-		} else if Conditions[1] == 'u' {
+		case 'u':
 			return s.UNKNOW
+		default:
+			variable, exist := Variables[rune(Conditions[1])]
+			return retBoolSprecial(!variable, exist)
 		}
 	} else if length == 1 {
-		if strings.ContainsRune(ALPHABET, rune(Conditions[0])) {
-			variable, exist := Variables[byte(Conditions[0])]
-			return retBoolSprecial(variable, exist)
-		} else if Conditions[0] == 't' {
+		switch Conditions[0] {
+		case 't':
 			return s.TRUE
-		} else if Conditions[0] == 'f' {
+		case 'f':
 			return s.FALSE
-		} else if Conditions[0] == 'u' {
+		case 'u':
 			return s.UNKNOW
+		default:
+			variable, exist := Variables[rune(Conditions[0])]
+			return retBoolSprecial(variable, exist)
 		}
 	}
 	panic("error: read while reading rule: '" + Conditions + "'")
 }
 
-func noOr(Conditions string, Variables map[byte]bool) int {
+func andRule(Conditions string, Variables map[rune]bool) int {
 	tab := strings.Split(Conditions, "+")
 	res := s.TRUE
 	for _, part := range tab {
-		tmp := noAnd(part, Variables)
-		// fmt.Println(tmp)
+		tmp := simpleVar(part, Variables)
 		if tmp == s.FALSE {
 			return s.FALSE
 		} else if tmp == s.UNKNOW {
@@ -64,11 +65,11 @@ func noOr(Conditions string, Variables map[byte]bool) int {
 	return res
 }
 
-func noXor(Conditions string, Variables map[byte]bool) int {
+func orRule(Conditions string, Variables map[rune]bool) int {
 	tab := strings.Split(Conditions, "|")
 	res := s.FALSE
 	for _, part := range tab {
-		tmp := noOr(part, Variables)
+		tmp := andRule(part, Variables)
 		if tmp == s.TRUE {
 			return s.TRUE
 		} else if tmp == s.UNKNOW {
@@ -78,20 +79,18 @@ func noXor(Conditions string, Variables map[byte]bool) int {
 	return res
 }
 
-func noParenthesisRule(Conditions string, Variables map[byte]bool) (res int, residue string) {
+func xorRule(Conditions string, Variables map[rune]bool) (res int, residue string) {
 	tab := strings.SplitN(Conditions, ")", 2)
-	// fmt.Println(tab[0])
-	// os.Exit(0)
 	if len(tab) == 2 {
 		residue = tab[1]
 	}
 	tab = strings.Split(tab[0], "^")
-	res = noXor(tab[0], Variables)
+	res = andRule(tab[0], Variables)
 	if res == s.UNKNOW {
 		return
 	}
 	for i := 1; i < len(tab); i++ {
-		tmp := noXor(tab[i], Variables)
+		tmp := andRule(tab[i], Variables)
 		if tmp == s.UNKNOW {
 			return s.UNKNOW, residue
 		} else if tmp != res {
@@ -103,15 +102,10 @@ func noParenthesisRule(Conditions string, Variables map[byte]bool) (res int, res
 	return
 }
 
-func RuleIsTrue(Conditions string, Variables map[byte]bool) int {
+func RuleIsTrue(Conditions string, Variables map[rune]bool) int {
 	tab := strings.Split(Conditions, "(")
-	for length := len(tab); length > 1; {
-		length--
-		// for _, str := range tab {
-		// 	fmt.Print(" '" + str + "'")
-		// }
-		// fmt.Println()
-		boolRes, residue := noParenthesisRule(tab[length], Variables)
+	for length := len(tab) - 1; length > 1; length--{
+		boolRes, residue := xorRule(tab[length], Variables)
 		if boolRes == s.TRUE {
 			tab[length-1] += "t" + residue
 		} else if boolRes == s.FALSE {
@@ -121,6 +115,6 @@ func RuleIsTrue(Conditions string, Variables map[byte]bool) int {
 		}
 		tab = tab[:length]
 	}
-	finalResult, _ := noParenthesisRule(tab[0], Variables)
+	finalResult, _ := xorRule(tab[0], Variables)
 	return finalResult
 }
