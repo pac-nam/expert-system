@@ -16,6 +16,7 @@ func VerifConclusion(ctx *s.Context, Conclusion string, CanChange []rune) bool {
 		newctx := ctx.Copy()
 		finalmap, end := ComplexeCase(newctx)
 		if end {
+			ctx.Rules = newctx.Rules
 			ctx.Variables = finalmap
 			return true
 		}
