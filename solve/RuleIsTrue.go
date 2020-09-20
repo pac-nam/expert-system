@@ -25,9 +25,9 @@ func simpleVar(Conditions string, Variables map[rune]bool) int {
 	// fmt.Println(Conditions)
 	if length == 2 {
 		switch Conditions[1] {
-		case 't':
+		case '1':
 			return s.FALSE
-		case 'f':
+		case '0':
 			return s.TRUE
 		case 'u':
 			return s.UNKNOW
@@ -37,9 +37,9 @@ func simpleVar(Conditions string, Variables map[rune]bool) int {
 		}
 	} else if length == 1 {
 		switch Conditions[0] {
-		case 't':
+		case '1':
 			return s.TRUE
-		case 'f':
+		case '0':
 			return s.FALSE
 		case 'u':
 			return s.UNKNOW
@@ -114,9 +114,9 @@ func RuleIsTrue(Conditions string, Variables map[rune]bool) int {
 		// fmt.Println(length)
 		boolRes, residue := xorRule(tab[length], Variables)
 		if boolRes == s.TRUE {
-			tab[length-1] += "t" + residue
+			tab[length-1] += "1" + residue
 		} else if boolRes == s.FALSE {
-			tab[length-1] += "f" + residue
+			tab[length-1] += "0" + residue
 		} else {
 			tab[length-1] += "u" + residue
 		}

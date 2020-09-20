@@ -6,7 +6,7 @@ import (
 
 const (
 	// ALPHABET is alphabet
-	ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ01"
 	//ALPHABETP is alphabet with exclamation mark
 	ALPHABETP = ALPHABET + "!"
 )
