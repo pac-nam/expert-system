@@ -22,7 +22,7 @@ func retBoolSprecial(variable bool, exist bool) int {
 
 func simpleVar(Conditions string, Variables map[rune]bool) int {
 	length := len(Conditions)
-
+	// fmt.Println(Conditions)
 	if length == 2 {
 		switch Conditions[1] {
 		case 't':
@@ -52,6 +52,7 @@ func simpleVar(Conditions string, Variables map[rune]bool) int {
 }
 
 func andRule(Conditions string, Variables map[rune]bool) int {
+	// fmt.Println(Conditions)
 	tab := strings.Split(Conditions, "+")
 	res := s.TRUE
 	for _, part := range tab {
@@ -66,7 +67,9 @@ func andRule(Conditions string, Variables map[rune]bool) int {
 }
 
 func orRule(Conditions string, Variables map[rune]bool) int {
+	// fmt.Println(Conditions)
 	tab := strings.Split(Conditions, "|")
+	// fmt.Println("tab:", tab)
 	res := s.FALSE
 	for _, part := range tab {
 		tmp := andRule(part, Variables)
@@ -80,12 +83,13 @@ func orRule(Conditions string, Variables map[rune]bool) int {
 }
 
 func xorRule(Conditions string, Variables map[rune]bool) (res int, residue string) {
+	// fmt.Println(Conditions)
 	tab := strings.SplitN(Conditions, ")", 2)
 	if len(tab) == 2 {
 		residue = tab[1]
 	}
 	tab = strings.Split(tab[0], "^")
-	res = andRule(tab[0], Variables)
+	res = orRule(tab[0], Variables)
 	if res == s.UNKNOW {
 		return
 	}
@@ -103,8 +107,11 @@ func xorRule(Conditions string, Variables map[rune]bool) (res int, residue strin
 }
 
 func RuleIsTrue(Conditions string, Variables map[rune]bool) int {
+	// fmt.Println(Conditions)
 	tab := strings.Split(Conditions, "(")
-	for length := len(tab) - 1; length > 1; length--{
+	// fmt.Println(len(tab))
+	for length := len(tab) - 1; length > 0; length--{
+		// fmt.Println(length)
 		boolRes, residue := xorRule(tab[length], Variables)
 		if boolRes == s.TRUE {
 			tab[length-1] += "t" + residue
@@ -115,6 +122,8 @@ func RuleIsTrue(Conditions string, Variables map[rune]bool) int {
 		}
 		tab = tab[:length]
 	}
+	// fmt.Println(tab[0])
 	finalResult, _ := xorRule(tab[0], Variables)
+	// fmt.Println(len(tab))
 	return finalResult
 }

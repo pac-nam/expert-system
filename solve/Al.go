@@ -3,41 +3,53 @@ package solve
 import (
 	s "expert-system/structures"
 	m "expert-system/messages"
-	"strings"
+	// "strings"
+	// "fmt"
 )
 
-func VerifConclusion(ctx *s.Context, Conclusion string) (success bool) {
-	tab := strings.Split(Conclusion, "+")
-	var variable, exist, asked bool
-	var letter rune
-	for _, part := range tab {
-		if len(part) == 1 {
-			letter = rune(part[0])
-			asked = true
-		} else {
-			letter = rune(part[1])
-			asked = false
-		}
-		variable, exist = ctx.Variables[letter]
-		if exist && variable != asked {
+func VerifConclusion(ctx *s.Context, Conclusion string, CanChange []rune) bool {
+	if len(CanChange) == 0 {
+		// fmt.Println("Conclusion:", Conclusion)
+		if RuleIsTrue(Conclusion, ctx.Variables) != s.TRUE {
 			return false
 		}
-		ctx.Variables[letter] = asked
+		newctx := ctx.Copy()
+		finalmap, end := ComplexeCase(newctx)
+		if end {
+			ctx.Variables = finalmap
+			return true
+		}
+	} else if _, exist := ctx.Variables[CanChange[0]]; !exist {
+		ctx.Variables[CanChange[0]] = true
+		if VerifConclusion(ctx, Conclusion, CanChange[1:]) {
+			return true
+		}
+		ctx.Variables[CanChange[0]] = false
+		if VerifConclusion(ctx, Conclusion, CanChange[1:]) {
+			return true
+		}
+		delete(ctx.Variables, CanChange[0])
+	} else {
+		if VerifConclusion(ctx, Conclusion, CanChange[1:]) {
+			return true
+		}
 	}
-	return true
+	return false
 }
 
-func ComplexeCase(ctx *s.Context, CanChange []rune) (finalMap map[rune]bool, end bool) {
+func ComplexeCase(ctx *s.Context) (finalMap map[rune]bool, end bool) {
 	if !VerifRules(ctx) {
 		return ctx.Variables, false
 	}
 	if len(ctx.Rules) == 0 {
 		return ctx.Variables, true
 	}
-	CanChange = CleanCanChange(CanChange, ctx.Variables)
-	for i, char := range CanChange {
+	CleanCanChange(ctx)
+	for i, char := range ctx.CanChange {
 		ctx.Variables[char] = false
-		finalMap, end := ComplexeCase(ctx.Copy(), RemoveIndex(CanChange, i))
+		newctx := ctx.Copy()
+		newctx.CanChange = RemoveIndex(ctx.CanChange, i)
+		finalMap, end := ComplexeCase(newctx)
 		if end {
 			return finalMap, true
 		}
@@ -53,7 +65,7 @@ func VerifRules(ctx *s.Context) (success bool) {
 		case s.TRUE:
 			Conclusion := ctx.Rules[i].Conclusion
 			ctx.RemoveRule(i)
-			if !VerifConclusion(ctx, Conclusion) {
+			if !VerifConclusion(ctx, Conclusion, []rune(UsedVar(Conclusion))) {
 				return false
 			}
 			goto VerifRulesStart
@@ -67,7 +79,9 @@ func VerifRules(ctx *s.Context) (success bool) {
 }
 
 func Algo(ctx *s.Context) string {
-	finalMap, end := ComplexeCase(ctx, ChangableVariables(ctx))
+	ctx.CanChange = ChangableVariables(ctx)
+	// fmt.Println(string(ctx.CanChange))
+	finalMap, end := ComplexeCase(ctx)
 	ctx.Variables = finalMap
 	if !end {
 		return m.Impossible

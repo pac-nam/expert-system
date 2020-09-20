@@ -3,6 +3,7 @@ package solve
 import (
 	s "expert-system/structures"
 	"strings"
+	"fmt"
 )
 
 func RemoveIndex(tab []rune, i int) []rune {
@@ -12,17 +13,18 @@ func RemoveIndex(tab []rune, i int) []rune {
 		}
 		return tab[:i]
 	}
+	fmt.Println(len(tab), i)
 	return append(tab[:i], tab[i+1:]...)
 }
 
-func CleanCanChange(tab []rune, variables map[rune]bool) []rune {
-	for i := 0; i < len(tab); i++ {
-		if _, exist := variables[tab[i]]; exist {
-			tab = RemoveIndex(tab, i)
+func CleanCanChange(ctx *s.Context) {
+	for i := 0; i < len(ctx.CanChange); i++ {
+		if _, exist := ctx.Variables[ctx.CanChange[i]]; exist {
+			// fmt.Println(string(ctx.CanChange))
+			ctx.CanChange = RemoveIndex(ctx.CanChange, i)
 			i--
 		}
 	}
-	return tab
 }
 
 func UsedVar(rule string) (res string) {

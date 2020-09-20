@@ -8,6 +8,7 @@ type Context struct {
 	Rules		[]Rule
 	Initial		string
 	Query		string
+	CanChange	[]rune
 	Variables	map[rune]bool
 }
 
@@ -32,6 +33,8 @@ func (ctx *Context) Copy() *Context {
 	newCtx := Context{}
 	newCtx.Rules = make([]Rule, len(ctx.Rules))
 	copy(newCtx.Rules, ctx.Rules)
+	newCtx.CanChange = make([]rune, len(ctx.CanChange))
+	copy(newCtx.CanChange, ctx.CanChange)
 	newCtx.Variables = make(map[rune]bool)
 	for key, value := range ctx.Variables {
 		newCtx.Variables[key] = value

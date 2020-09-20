@@ -51,7 +51,7 @@ func checkLine(line string) string {
 				return "wrong character after '" + string(char) + "' in rule: " + line
 			}
 		} else if char == '>' {
-			if !strings.ContainsRune(ALPHABETP, rune(line[index+1])) {
+			if !strings.ContainsRune(ALPHABET+"(!", rune(line[index+1])) {
 				return "wrong character after '" + string(char) + "' in rule: " + line
 			}
 		} else if char == '!' {
@@ -65,14 +65,10 @@ func checkLine(line string) string {
 		} else if strings.ContainsRune("|^", char) {
 			if !strings.ContainsRune(ALPHABET+"(!", rune(line[index+1])) {
 				return "wrong character after '" + string(char) + "' in rule: " + line
-			} else if equal {
-				return "invalid sign '" + string(char) + "' in conclusion in rule: " + line
 			}
 		} else if char == '(' {
 			if !strings.ContainsRune(ALPHABET+"!", rune(line[index+1])) {
 				return "wrong character after '" + string(char) + "' in rule: " + line
-			} else if equal {
-				return "parenthesis in conclusion in rule: " + line
 			}
 			bracket++
 		} else if char == ')' {
@@ -83,6 +79,9 @@ func checkLine(line string) string {
 			}
 			bracket--
 		}
+	}
+	if bracket != 0 {
+		return "parenthesis error in rule: " + line
 	}
 	return ""
 }
