@@ -2,6 +2,7 @@ package parse
 
 import (
 	"strings"
+	// "fmt"
 )
 
 const (
@@ -29,7 +30,7 @@ func checkLine(line string) string {
 	equal := false
 	lastVerif := len(line) - 1
 	bracket := 0
-	if !strings.ContainsRune(ALPHABET, rune(line[lastVerif])) {
+	if !strings.ContainsRune(ALPHABET + ")", rune(line[lastVerif])) {
 		return "error with rule: " + line
 	}
 	for index, char := range line[:lastVerif] {
@@ -67,7 +68,7 @@ func checkLine(line string) string {
 				return "wrong character after '" + string(char) + "' in rule: " + line
 			}
 		} else if char == '(' {
-			if !strings.ContainsRune(ALPHABET+"!", rune(line[index+1])) {
+			if !strings.ContainsRune(ALPHABET+"(!", rune(line[index+1])) {
 				return "wrong character after '" + string(char) + "' in rule: " + line
 			}
 			bracket++
@@ -80,7 +81,7 @@ func checkLine(line string) string {
 			bracket--
 		}
 	}
-	if bracket != 0 {
+	if bracket != 0 && !(bracket == 1 && line[lastVerif] == ')'){
 		return "parenthesis error in rule: " + line
 	}
 	return ""
