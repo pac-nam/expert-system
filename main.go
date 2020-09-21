@@ -16,12 +16,12 @@ func main() {
 		fmt.Println("Error:", err)
 	} else {
 		err = s.Algo(ctx)
+		if ctx.Flag_v {
+			fmt.Print(ctx.Verbose)
+		}
 		if err != "" {
 			fmt.Println(err)
 		} else {
-			if ctx.Flag_v {
-				fmt.Print(ctx.Verbose)
-			}
 			for _, char := range ctx.Query {
 				fmt.Println(string(char) + ":", ctx.Variables[char])
 			}
