@@ -7,7 +7,7 @@ import (
 
 func VerboseAddLine(ctx *s.Context, line string) {
 	for i := 0; i < ctx.DeepLevel; i++ {
-		ctx.Verbose += "  |"
+		ctx.Verbose += "  "
 	}
 	ctx.Verbose += line
 }
