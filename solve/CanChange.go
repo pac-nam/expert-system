@@ -3,7 +3,7 @@ package solve
 import (
 	s "expert-system/structures"
 	"strings"
-	"fmt"
+	// "fmt"
 )
 
 func RemoveIndex(tab []rune, i int) []rune {
@@ -13,7 +13,7 @@ func RemoveIndex(tab []rune, i int) []rune {
 		}
 		return tab[:i]
 	}
-	fmt.Println(len(tab), i)
+	// fmt.Println(len(tab), i)
 	return append(tab[:i], tab[i+1:]...)
 }
 

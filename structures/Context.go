@@ -5,6 +5,9 @@ import (
 )
 
 type Context struct {
+	Flag_v		bool
+	Verbose		string
+	DeepLevel	int
 	Rules		[]Rule
 	Initial		string
 	Query		string
@@ -14,10 +17,14 @@ type Context struct {
 
 func (ctx Context) String() string {
 	res := "------------------------------------Context------------------------------------\n"
-	res += "Initial state:\n"
-	res += fmt.Sprintln(ctx.Initial)
-	res += "\nQuery:\n"
-	res += fmt.Sprintln(ctx.Query)
+	if ctx.Initial != "" {
+		res += "Initial state:\n"
+		res += fmt.Sprintln(ctx.Initial)
+	}
+	if ctx.Query != "" {
+		res += "\nQuery:\n"
+		res += fmt.Sprintln(ctx.Query)
+	}
 	res += "\nRules:\n"
 	for _, rule := range ctx.Rules {
 		res += fmt.Sprintln(rule)
@@ -30,7 +37,7 @@ func (ctx Context) String() string {
 }
 
 func (ctx *Context) Copy() *Context {
-	newCtx := Context{}
+	newCtx := Context{DeepLevel: ctx.DeepLevel+1}
 	newCtx.Rules = make([]Rule, len(ctx.Rules))
 	copy(newCtx.Rules, ctx.Rules)
 	newCtx.CanChange = make([]rune, len(ctx.CanChange))

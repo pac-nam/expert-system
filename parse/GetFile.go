@@ -97,7 +97,7 @@ func initVariables(ctx *s.Context) string {
 
 // Parse will parse the file given as first argument and fullfil the context
 func Parse() (*s.Context, string) {
-	ctx := s.Context{Initial: "=", Query: "?"}
+	ctx := s.Context{Verbose: "", DeepLevel: 0, Initial: "=", Query: "?"}
 	if len(os.Args) != 2 || os.Args[1] == "-h" {
 		fmt.Println(m.Help)
 		os.Exit(0)
