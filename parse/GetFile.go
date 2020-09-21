@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"flag"
 )
 
 func epur(line string) string {
@@ -95,17 +96,31 @@ func initVariables(ctx *s.Context) string {
 	return ""
 }
 
-// Parse will parse the file given as first argument and fullfil the context
-func Parse() (*s.Context, string) {
-	ctx := s.Context{Verbose: "", DeepLevel: 0, Initial: "=", Query: "?"}
-	if len(os.Args) != 2 || os.Args[1] == "-h" {
+func Option() (*s.Context, string) {
+	var verbose, help *bool
+	verbose = flag.Bool("v", false, "Activate verbose")
+	help = flag.Bool("h", false, "print this help")
+	flag.Parse()
+	if *help == true || len(flag.Args()) != 1 {
 		fmt.Println(m.Help)
 		os.Exit(0)
 	}
-	err := parseFile(&ctx, os.Args[1])
-	if err != "" {
-		return &ctx, err
+	ctx := s.Context{Flag_v: *verbose,
+		Verbose: "",
+		DeepLevel: 0,
+		Initial: "=",
+		Query: "?",
 	}
-	err = initVariables(&ctx)
-	return &ctx, err
+	return &ctx, flag.Args()[0]
+}
+
+// Parse will parse the file given as first argument and fullfil the context
+func Parse() (*s.Context, string) {
+	ctx, file := Option()
+	err := parseFile(ctx, file)
+	if err != "" {
+		return ctx, err
+	}
+	err = initVariables(ctx)
+	return ctx, err
 }
