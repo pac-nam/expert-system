@@ -9,5 +9,6 @@ const (
 	Impossible = "Unsolvable rule set"
 	Help = `Usage ./expert-system [-v] [-h] <rule_file>
 	-v		Activate verbose
+	-a		Print the file before computing
 	-h		Print this help`
 )

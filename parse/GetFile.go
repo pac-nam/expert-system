@@ -54,6 +54,7 @@ func parseLine(ctx *s.Context, line string) string {
 }
 
 func parseFile(ctx *s.Context, filename string) string {
+	fileContent := "----------- " + filename + " -----------\n"
 	ctx.Rules = make([]s.Rule, 0)
 	file, err := os.Open(filename)
 	if err != nil {
@@ -62,13 +63,16 @@ func parseFile(ctx *s.Context, filename string) string {
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		if err2 := parseLine(ctx, epur(scanner.Text())); err2 != "" {
+		line := scanner.Text()
+		if err2 := parseLine(ctx, epur(line)); err2 != "" {
 			return err2
 		}
+		fileContent += line + "\n"
 	}
 	if err = scanner.Err(); err != nil {
 		return m.ReadError
 	}
+	fmt.Println(fileContent + "---------------------------------")
 	return ""
 }
 
@@ -97,8 +101,9 @@ func initVariables(ctx *s.Context) string {
 }
 
 func Option() (*s.Context, string) {
-	var verbose, help *bool
+	var verbose, help, aff_file *bool
 	verbose = flag.Bool("v", false, "Activate verbose")
+	aff_file = flag.Bool("a", false, "show file before computing")
 	help = flag.Bool("h", false, "print this help")
 	flag.Parse()
 	if *help == true || len(flag.Args()) != 1 {
@@ -106,6 +111,7 @@ func Option() (*s.Context, string) {
 		os.Exit(0)
 	}
 	ctx := s.Context{Flag_v: *verbose,
+		Flag_a: *aff_file,
 		Verbose: "",
 		DeepLevel: 0,
 		Initial: "=",

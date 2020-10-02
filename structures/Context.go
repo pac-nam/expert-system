@@ -6,6 +6,7 @@ import (
 
 type Context struct {
 	Flag_v		bool
+	Flag_a		bool
 	Verbose		string
 	DeepLevel	int
 	Rules		[]Rule
